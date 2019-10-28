@@ -2,31 +2,47 @@
 using TMPro;
 using System.Collections;
 
+[System.Serializable]
 public class Enemy : MonoBehaviour
 {
-    public TMP_Text writtenText;
+    public TMP_Text wordVisual;
 
-    public string myText = "";
-    string written = "";
+    public string myWord = "";
+    Transform _target;
 
-    private IEnumerator Start()
+    private void Start()
     {
-        yield return new WaitForSeconds(1); // TODO Remove this  waiting
-        myText = TypeManager.wordToType;        
+        _target = GameObject.FindGameObjectWithTag("Player").transform;
+
+        //yield return new WaitForSeconds(1); // TODO Remove this  waiting
+        myWord = WordDatabase.FetchRandomWord();
+        wordVisual.text = myWord;
     }
 
-    public void WriteText(string typedWord)
+    void Update()
     {
-        // TODO don't set this ever time
-        written = typedWord;
+        if (_target)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, _target.position, Time.deltaTime * 0.5f);
+        }
+    }
 
-        if (written.Length >= myText.Length)
+    public void WriteText(string pressedLetter)
+    {
+        myWord = myWord.Substring(1);
+        wordVisual.text = myWord;
+
+        if (myWord.Length <= 0)
         {
             gameObject.SetActive(false);
         }
-        else
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (CompareTag(collision.gameObject.tag ="Player"))
         {
-            writtenText.text = written;
+            GameManager.Instance.GameOver();
         }
     }
 }

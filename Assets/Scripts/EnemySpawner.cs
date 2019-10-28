@@ -7,31 +7,26 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public float spawnRate = 10f;
 
-    static public List<Enemy> SpawnedEnemies { get; private set; } = new List<Enemy>();
+    public List<Enemy> SpawnedEnemies { get; private set; } = new List<Enemy>();
 
-    void Start()
-    {
-        StartCoroutine(SpawnRoutine());
-    }
+    Coroutine _spawnRoutine = null;
 
-    IEnumerator SpawnRoutine()
+    public void Spawn()
     {
-        while (Application.isPlaying)
+        for (int i = 0; i < Random.Range(3, 5); i++)
         {
             GameObject enemy = Instantiate(enemyPrefab);
-            enemy.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Random.Range(0, Screen.width), Random.Range(0, Screen.height), 10));
+            enemy.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Random.Range(0, Screen.width - 128), Screen.height, 10));
             SpawnedEnemies.Add(enemy.GetComponent<Enemy>());
-
-            yield return new WaitForSeconds(spawnRate);
         }
     }
 
-    static public Enemy FetchEnemyMatchingLetter(string letter)
+    public Enemy FetchEnemyMatchingLetter(string letter)
     {
         for (int i = 0; i < SpawnedEnemies.Count; i++)
         {
             // Find the matching first letter
-            if (SpawnedEnemies[i].myText[0].ToString() == letter)
+            if (SpawnedEnemies[i].myWord[0].ToString() == letter)
             {
                 Debug.Log("found enemy with matching letter");
                 return SpawnedEnemies[i];

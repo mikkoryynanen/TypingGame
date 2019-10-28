@@ -6,14 +6,12 @@ using UnityEngine.UI;
 
 public class TypeManager : MonoBehaviour
 {
+    public EnemySpawner enemySpawner;
     public Text currentWordText;
 
-    public static string wordToType = "";
-
+    string wordToType = "";
     Enemy myCurrentTarget = null;
     string typedWord = "";
-    int currentWordIndex = 0;
-    List<int> completedWords = new List<int>();
 
     private void Start()
     {
@@ -24,10 +22,11 @@ public class TypeManager : MonoBehaviour
 
     void RandomizeNewWord()
     {
-        wordToType = WordDatabase.FetchRandomWord();
-        currentWordText.text = wordToType;
         typedWord = string.Empty;
-        currentWordIndex = 0;
+        wordToType = "";
+
+        enemySpawner.SpawnedEnemies.Remove(myCurrentTarget);
+        myCurrentTarget = null; 
     }
 
     void Update()
@@ -38,21 +37,13 @@ public class TypeManager : MonoBehaviour
 
             if (myCurrentTarget == null)
             {
-                myCurrentTarget = EnemySpawner.FetchEnemyMatchingLetter(pressedButton);
+                myCurrentTarget = enemySpawner.FetchEnemyMatchingLetter(pressedButton);
+                wordToType = myCurrentTarget.myWord;
             }
 
-            if (wordToType[currentWordIndex].ToString() == pressedButton)
-            {
-                typedWord += pressedButton;
-                currentWordIndex++;
+            myCurrentTarget.WriteText(pressedButton);
 
-                myCurrentTarget.WriteText(typedWord);
-            }
-            else
-            {
-                Debug.LogErrorFormat("word doesn't contain letter {0}", pressedButton);
-            }
-
+            typedWord += pressedButton;
             if (typedWord.Length >= wordToType.Length)
             {
                 RandomizeNewWord();

@@ -16,7 +16,7 @@ public class EnemySpawner : MonoBehaviour
         for (int i = 0; i < Random.Range(3, 5); i++)
         {
             GameObject enemy = Instantiate(enemyPrefab);
-            enemy.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Random.Range(0, Screen.width - 128), Screen.height, 10));
+            enemy.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Random.Range(0, Screen.width - 75), Screen.height, 10));
             SpawnedEnemies.Add(enemy.GetComponent<Enemy>());
         }
     }
@@ -26,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
         for (int i = 0; i < SpawnedEnemies.Count; i++)
         {
             // Find the matching first letter
-            if (SpawnedEnemies[i].myWord[0].ToString() == letter)
+            if (SpawnedEnemies[i].MyWord[0].ToString() == letter)
             {
                 Debug.Log("found enemy with matching letter");
                 return SpawnedEnemies[i];

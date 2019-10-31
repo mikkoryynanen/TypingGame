@@ -21,8 +21,28 @@ public class WordDatabase
         }
     }
 
+    static public List<string> FetchedWords { get; private set; } = new List<string>();
+
     static public string FetchRandomWord()
     {
-        return Words[UnityEngine.Random.Range(0, Words.Count - 1)];
+        string randomWord = Words[UnityEngine.Random.Range(0, Words.Count - 1)];
+        while(WordsHaveLetter(randomWord[0]) && FetchedWords.Count > 0)
+        {
+            randomWord = Words[UnityEngine.Random.Range(0, Words.Count - 1)];
+        }
+        FetchedWords.Add(randomWord);
+        return randomWord;
+    }
+
+    private static bool WordsHaveLetter(char c)
+    {
+        for (int i = 0; i < FetchedWords.Count; i++)
+        {
+            if (FetchedWords[i][0] == c)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
